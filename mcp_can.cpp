@@ -422,7 +422,7 @@ void MCP_CAN::mcp2515_write_id( const INT8U mcp_addr, const INT8U ext, const INT
     uint16_t canid;
     INT8U tbufdata[4];
 
-    canid = (uint16_t)(id & 0x0FFFF);
+    canid = (uint16_t)(id & 0x1FFFF);
 
     if ( ext == 1) 
     {
@@ -547,12 +547,18 @@ INT8U MCP_CAN::mcp2515_getNextFreeTXBuf(INT8U *txbuf_n)                 /* get N
     return res;
 }
 
+MCP_CAN::MCP_CAN(INT8U _CS)
+{
+    init_CS(_CS);
+}
+
 /*********************************************************************************************************
 ** Function name:           set CS
 ** Descriptions:            init CS pin and set UNSELECTED
 *********************************************************************************************************/
-MCP_CAN::MCP_CAN(INT8U _CS)
+void MCP_CAN::init_CS(INT8U _CS)
 {
+    if (_CS==0) return;
     SPICS = _CS;
     pinMode(SPICS, OUTPUT);
     MCP2515_UNSELECT();
@@ -696,7 +702,7 @@ INT8U MCP_CAN::init_Filt(INT8U num, INT8U ext, INT32U ulData)
 ** Function name:           setMsg
 ** Descriptions:            set can message, such as dlc, id, dta[] and so on
 *********************************************************************************************************/
-INT8U MCP_CAN::setMsg(INT32U id, INT8U ext, INT8U len, INT8U rtr, INT8U *pData)
+INT8U MCP_CAN::setMsg(INT32U id, INT8U ext, INT8U len, INT8U rtr, const INT8U *pData)
 {
     int i = 0;
     m_nExtFlg = ext;
@@ -715,7 +721,7 @@ INT8U MCP_CAN::setMsg(INT32U id, INT8U ext, INT8U len, INT8U rtr, INT8U *pData)
 ** Function name:           setMsg
 ** Descriptions:            set can message, such as dlc, id, dta[] and so on
 *********************************************************************************************************/
-INT8U MCP_CAN::setMsg(INT32U id, INT8U ext, INT8U len, INT8U *pData)
+INT8U MCP_CAN::setMsg(INT32U id, INT8U ext, INT8U len, const INT8U *pData)
 {
     int i = 0;
     m_nExtFlg = ext;
@@ -749,12 +755,13 @@ INT8U MCP_CAN::clearMsg()
 ** Function name:           sendMsg
 ** Descriptions:            send message
 *********************************************************************************************************/
-INT8U MCP_CAN::sendMsg()
+INT8U MCP_CAN::sendMsg(bool wait_sent)
 {
     INT8U res, res1, txbuf_n;
     uint16_t uiTimeOut = 0;
 
     do {
+        if (uiTimeOut>0) delayMicroseconds(10);
         res = mcp2515_getNextFreeTXBuf(&txbuf_n);                       /* info = addr.                 */
         uiTimeOut++;
     } while (res == MCP_ALLTXBUSY && (uiTimeOut < TIMEOUTVALUE));
@@ -763,19 +770,28 @@ INT8U MCP_CAN::sendMsg()
     {   
         return CAN_GETTXBFTIMEOUT;                                      /* get tx buff time out         */
     }
-    uiTimeOut = 0;
     mcp2515_write_canMsg( txbuf_n);
     mcp2515_start_transmit( txbuf_n );
+#if DEBUG_MODE
+    Serial.print("txbuf:"); Serial.println(txbuf_n);
+#endif
+
+    if (wait_sent) {
+    uiTimeOut = 0;
     do
     {
+        if (uiTimeOut>0) delayMicroseconds(10);
         uiTimeOut++;        
-        res1= mcp2515_readRegister(txbuf_n);  			                /* read send buff ctrl reg 	*/
+        res1= mcp2515_readRegister(txbuf_n-1);  			                /* read send buff ctrl reg 	*/
         res1 = res1 & 0x08;                               		
-    }while(res1 && (uiTimeOut < TIMEOUTVALUE));   
+    } while(res1 && (uiTimeOut < TIMEOUTVALUE));   
+
     if(uiTimeOut == TIMEOUTVALUE)                                       /* send msg timeout             */	
     {
         return CAN_SENDMSGTIMEOUT;
     }
+    }
+    
     return CAN_OK;
 
 }
@@ -784,20 +800,20 @@ INT8U MCP_CAN::sendMsg()
 ** Function name:           sendMsgBuf
 ** Descriptions:            send buf
 *********************************************************************************************************/
-INT8U MCP_CAN::sendMsgBuf(INT32U id, INT8U ext, INT8U rtr, INT8U len, INT8U *buf)
+INT8U MCP_CAN::sendMsgBuf(INT32U id, INT8U ext, INT8U rtr, INT8U len, const INT8U *buf, bool wait_sent)
 {
     setMsg(id, ext, len, rtr, buf);
-    return sendMsg();
+    return sendMsg(wait_sent);
 }
 
 /*********************************************************************************************************
 ** Function name:           sendMsgBuf
 ** Descriptions:            send buf
 *********************************************************************************************************/
-INT8U MCP_CAN::sendMsgBuf(INT32U id, INT8U ext, INT8U len, INT8U *buf)
+INT8U MCP_CAN::sendMsgBuf(INT32U id, INT8U ext, INT8U len, const INT8U *buf, bool wait_sent)
 {
     setMsg(id, ext, len, buf);
-    return sendMsg();
+    return sendMsg(wait_sent);
 }
 
 
