@@ -18,8 +18,9 @@
   1301  USA
 */
 #include "mcp_can.h"
-SPIClass SPI_2(2); 
-#define spi_readwrite SPI_2.transfer
+//SPIClass SPI_2(2);                          for maple mini spi2 port
+//#define spi_readwrite SPI_2.transfer        for maple mini spi2 port
+#define spi_readwrite SPI.transfer
 #define spi_read() spi_readwrite(0x00)
 
 /*********************************************************************************************************
@@ -664,7 +665,8 @@ INT8U MCP_CAN::begin(INT8U speedset, const INT8U clockset)
 {
   INT8U res;
 
-  SPI_2.begin();
+  //SPI_2.begin();      for maple mini spi2 
+  SPI.begin();
   res = mcp2515_init(speedset, clockset);
   if (res == MCP2515_OK) return CAN_OK;
   else return CAN_FAILINIT;
