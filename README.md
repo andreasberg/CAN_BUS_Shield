@@ -1,7 +1,7 @@
 CAN BUS Shield MODIFIED VERSION: 8 AND 16 MHZ BOARD.
 
-Use  this fuction "INT8U begin(INT8U speedset, const INT8U clockset = MCP_8MHz);"
-for change from 8MHZ to 16MHZ board.
+Use  this fuction "INT8U begin(INT8U speedset, const INT8U clockset = MCP_16MHz);"
+for change from 16MHZto 8MHZ board.
 
 ---------------------------------------------------------
 [![CAN BUS Shield](http://www.seeedstudio.com/depot/images/1130300211.jpg)](http://www.seeedstudio.com/depot/CANBUS-Shield-p-2256.html?cPath=19_88)
