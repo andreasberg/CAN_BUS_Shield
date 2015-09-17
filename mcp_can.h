@@ -98,7 +98,7 @@ private:
 public:
     MCP_CAN(INT8U _CS=0);//INT8U _CS);
     void init_CS(INT8U _CS);
-    INT8U begin(INT8U speedset, const INT8U clockset = MCP_8MHz);                                    /* init can                     */
+    INT8U begin(INT8U speedset, const INT8U clockset = MCP_16MHz);                                    /* init can                     */
     INT8U init_Mask(INT8U num, INT8U ext, INT32U ulData);           /* init Masks                   */
     INT8U init_Filt(INT8U num, INT8U ext, INT32U ulData);           /* init filters                 */
     INT8U sendMsgBuf(INT32U id, INT8U ext, INT8U rtr, INT8U len, const INT8U *buf, bool wait_sent=true);   /* send buf                     */
