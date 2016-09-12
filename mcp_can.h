@@ -40,6 +40,7 @@ class MCP_CAN
     INT8U   m_nRtr;                                                     /* rtr                          */
     INT8U   m_nfilhit;
     INT8U   SPICS;
+    SPIClass *pSPI;
 
 /*
 *  mcp2515 driver function 
@@ -98,6 +99,7 @@ private:
 public:
     MCP_CAN(INT8U _CS=0);//INT8U _CS);
     void init_CS(INT8U _CS);
+    void setSPI(SPIClass *_pSPI) { pSPI=_pSPI; }
     INT8U begin(INT8U speedset, const INT8U clockset = MCP_16MHz);                                    /* init can                     */
     INT8U init_Mask(INT8U num, INT8U ext, INT32U ulData);           /* init Masks                   */
     INT8U init_Filt(INT8U num, INT8U ext, INT32U ulData);           /* init filters                 */
