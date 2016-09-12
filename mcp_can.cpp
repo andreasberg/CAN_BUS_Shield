@@ -18,9 +18,8 @@
   1301  USA
 */
 #include "mcp_can.h"
-//SPIClass SPI_2(2);                          for maple mini spi2 port
-//#define spi_readwrite SPI_2.transfer        for maple mini spi2 port
-#define spi_readwrite SPI.transfer
+
+#define spi_readwrite pSPI->transfer
 #define spi_read() spi_readwrite(0x00)
 
 /*********************************************************************************************************
@@ -515,7 +514,7 @@ void MCP_CAN::mcp2515_write_id( const INT8U mcp_addr, const INT8U ext, const INT
   uint16_t canid;
   INT8U tbufdata[4];
 
-  canid = (uint16_t)(id & 0x1FFFF);
+  canid = (uint16_t)(id & 0x0FFFF);
 
   if ( ext == 1)
   {
@@ -642,7 +641,7 @@ INT8U MCP_CAN::mcp2515_getNextFreeTXBuf(INT8U *txbuf_n)                 /* get N
 
 MCP_CAN::MCP_CAN(INT8U _CS)
 {
-  init_CS(_CS);
+  pSPI=&SPI; init_CS(_CS);
 }
 
 /*********************************************************************************************************
@@ -665,8 +664,7 @@ INT8U MCP_CAN::begin(INT8U speedset, const INT8U clockset)
 {
   INT8U res;
 
-  //SPI_2.begin();      for maple mini spi2 
-  SPI.begin();
+  pSPI->begin();
   res = mcp2515_init(speedset, clockset);
   if (res == MCP2515_OK) return CAN_OK;
   else return CAN_FAILINIT;
