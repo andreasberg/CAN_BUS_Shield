@@ -160,6 +160,19 @@ INT8U MCP_CAN::mcp2515_configRate(const INT8U canSpeed, const INT8U clock)
   set = 1;
   switch (clock)
   {
+    case (MCP_10MHz) :
+      switch (canSpeed)
+      {
+        case (CAN_250KBPS):
+          cfg1 = MCP_10MHz_250kBPS_CFG1;
+          cfg2 = MCP_10MHz_250kBPS_CFG2;
+          cfg3 = MCP_10MHz_250kBPS_CFG3;
+          break;
+        default:
+          set = 0;
+          break;
+      }
+      break;
     case (MCP_16MHz) :
       switch (canSpeed)
       {

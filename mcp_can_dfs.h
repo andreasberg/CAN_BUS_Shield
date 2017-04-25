@@ -249,6 +249,15 @@
  */
 #define MCP_16MHz	1
 #define MCP_8MHz	2
+#define MCP_10MHz  3
+
+
+/*
+ *  speed 10M
+ */
+#define MCP_10MHz_250kBPS_CFG1 (0x00)
+#define MCP_10MHz_250kBPS_CFG2 (0xBA)
+#define MCP_10MHz_250kBPS_CFG3 (0x07)
 
 /*
  *  speed 16M
