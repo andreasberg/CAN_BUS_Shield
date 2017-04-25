@@ -1,10 +1,22 @@
+[![CAN SPI click](https://cdn1-shop.mikroe.com/img/p/click/interface/can-spi-33v/can-spi-33v-small_default-4.jpg)](https://shop.mikroe.com/click/interface/can-spi-33v)
+
+This fork adds support for MikroElektronika [CAN SPI click](https://shop.mikroe.com/click/interface/can-spi-33v)-board which uses a 10MHz oscillator.<br> 
+Only bitrate 250kbps supported but additional bitrates can be easily added in the mcp_can_dfs.h. <br>
+I used [this tool](https://www.intrepidcs.com/products/free-tools/mb-time-calculator/) to calculate the CNF1/CNF2/CNF3 (ie. CFG1/CFG2/CFG3) for the MCP2515-chip.<br>
+<br>
+Usage:<br>
+INT8U speedset = CAN_250KBPS;<br>
+const INT8U clockset = MCP_10MHz;<br>
+
+---------------------------------------------------------
+
 CAN BUS Shield MODIFIED VERSION: 8 AND 16 MHZ BOARD.
 
 Use  this fuction "INT8U begin(INT8U speedset, const INT8U clockset = MCP_16MHz);"
 for change from 16MHZto 8MHZ board.
 
 ---------------------------------------------------------
-[![CAN BUS Shield](http://www.seeedstudio.com/depot/images/1130300211.jpg)](http://www.seeedstudio.com/depot/CANBUS-Shield-p-2256.html?cPath=19_88)
+[![CAN BUS Shield](https://statics3.seeedstudio.com/images/1130300211.jpg)](http://www.seeedstudio.com/depot/CANBUS-Shield-p-2256.html?cPath=19_88)
 
 
 
